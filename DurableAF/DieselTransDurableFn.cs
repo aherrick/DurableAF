@@ -9,7 +9,7 @@ namespace DurableAF
     public static class DieselTransDurableFn
     {
         [FunctionName("DieselTransDurable")]
-        public static async Task<List<string>> Run(
+        public static async Task<DurableResponse> Run(
             [OrchestrationTrigger] DurableOrchestrationContext context)
         {
             var outputs = new List<string>();
@@ -23,11 +23,17 @@ namespace DurableAF
             }
             catch (Exception ex)
             {
-                throw ex;
+                return new DurableResponse()
+                {
+                    ErrorMsg = ex.ToString()
+                };
             }
 
             // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
-            return outputs;
+            return new DurableResponse()
+            {
+                XMLResult = XmlHelpers.Serialize(outputs)
+            };
         }
 
         [FunctionName("DieselQueueVal")]

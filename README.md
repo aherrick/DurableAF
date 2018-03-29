@@ -1,4 +1,4 @@
 # FunctionAF
 
-Shows Azure Function handling sync or async requests.
+Shows Azure Durable Function handling sync or async request.
 

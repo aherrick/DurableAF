@@ -40,8 +40,9 @@ namespace DurableAF
                     var status = await client.GetStatusAsync(instanceId);
                     if (status?.RuntimeStatus == OrchestrationRuntimeStatus.Completed)
                     {
-                        var data = status.Output;
-                        return req.CreateResponse(HttpStatusCode.OK, data.ToString());
+                        var result = status.Output.ToObject<DurableResponse>();
+
+                        return req.CreateResponse(HttpStatusCode.OK, result);
                     }
                     else if (status?.RuntimeStatus == OrchestrationRuntimeStatus.Failed)
                     {
