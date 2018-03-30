@@ -17,7 +17,7 @@ namespace DurableAF
         {
             // 0)
             // check if async, for now hard cocde
-            bool async = true;
+            bool async = false;
 
             // 1)
             // transfrom xml pulled from request
@@ -35,6 +35,8 @@ namespace DurableAF
             }
             else
             {
+                return await client.WaitForCompletionOrCreateCheckStatusResponseAsync(req, instanceId, timeout: new TimeSpan(0, 0, 120), retryInterval: new TimeSpan(0, 0, 1));
+                /*
                 for (int i = 0; i < 120; i++)
                 {
                     var status = await client.GetStatusAsync(instanceId);
@@ -52,7 +54,7 @@ namespace DurableAF
                     }
 
                     await Task.Delay(TimeSpan.FromSeconds(1));
-                }
+                }*/
             }
 
             return req.CreateResponse(HttpStatusCode.BadRequest, "Bad");
