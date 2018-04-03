@@ -3,6 +3,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace DurableAF
@@ -30,11 +31,14 @@ namespace DurableAF
 
             if (async)
             {
-                return client.CreateCheckStatusResponse(req, instanceId);
+                var res = client.CreateCheckStatusResponse(req, instanceId);
+                // tells calling system to check again after 10 seconds
+                res.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromSeconds(10));
+                return res;
             }
             else
             {
-                return await client.WaitForCompletionOrCreateCheckStatusResponseAsync(req, instanceId, timeout: new TimeSpan(0, 0, 120), retryInterval: new TimeSpan(0, 0, 1));
+                return await client.WaitForCompletionOrCreateCheckStatusResponseAsync(req, instanceId, timeout: new TimeSpan(0, 0, 120), retryInterval: new TimeSpan(0, 0, 5));
             }
         }
 
